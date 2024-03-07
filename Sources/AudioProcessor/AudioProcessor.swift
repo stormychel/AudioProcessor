@@ -139,9 +139,8 @@ public class AudioProcessor: NSObject, AVAudioRecorderDelegate, ObservableObject
         audioEngine.stop()
         timer?.invalidate()
         timer = nil
-        if let path = filePath {
-            recordingContinuation?.yield(path)
-        }
+        
+        self.recordingContinuation?.finish()
         
         audioRecorder?.stop()
         
