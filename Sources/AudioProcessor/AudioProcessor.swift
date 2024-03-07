@@ -32,14 +32,14 @@ public class AudioProcessor: NSObject, AVAudioRecorderDelegate, ObservableObject
     public func start(directory: String) {
         self.directory = directory
         
-        #if os(iOS) || os(tvOS)
+        #if os(iOS) || os(tvOS) || os(visionOS)
         setupRecordingSession()
         #else
         startRecording()
         #endif
     }
     
-    #if os(iOS) || os(tvOS)
+    #if os(iOS) || os(tvOS) || os(visionOS)
     private var recordingSession: AVAudioSession?
     
     public func startStreaming(callback: @escaping (Data) -> Void) {
@@ -145,7 +145,7 @@ public class AudioProcessor: NSObject, AVAudioRecorderDelegate, ObservableObject
         
         audioRecorder?.stop()
         
-        #if os(iOS) || os(tvOS)
+        #if os(iOS) || os(tvOS) || os(visionOS)
         try? recordingSession?.setActive(false, options: .notifyOthersOnDeactivation)
         recordingSession = nil
         #endif
