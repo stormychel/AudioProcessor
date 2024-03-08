@@ -50,7 +50,7 @@ public class AudioProcessor: NSObject, AVAudioRecorderDelegate, ObservableObject
     private func startAnalyzingAudio() {
         let inputNode = audioEngine.inputNode
         let inputFormat = inputNode.inputFormat(forBus: 0)
-        let outputFormat = AVAudioFormat(commonFormat: .pcmFormatInt16, sampleRate: inputFormat.sampleRate, channels: inputFormat.channelCount, interleaved: true)
+        let outputFormat = AVAudioFormat(commonFormat: .pcmFormatFloat32, sampleRate: inputFormat.sampleRate, channels: inputFormat.channelCount, interleaved: true)
         let converterNode = AVAudioMixerNode()
         let sinkNode = AVAudioMixerNode()
         
