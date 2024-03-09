@@ -32,14 +32,14 @@ public class AudioProcessor: NSObject, AVAudioRecorderDelegate, ObservableObject
     public func start(directory: String) {
         self.directory = directory
         
-        #if os(iOS) || os(tvOS)
+        #if os(iOS) || os(tvOS) || os(visionOS)
         setupRecordingSession()
         #else
         startRecording()
         #endif
     }
     
-    #if os(iOS) || os(tvOS)
+    #if os(iOS) || os(tvOS) || os(visionOS)
     private var recordingSession: AVAudioSession?
     
     public func startStreaming(callback: @escaping (Data) -> Void) {
@@ -50,7 +50,7 @@ public class AudioProcessor: NSObject, AVAudioRecorderDelegate, ObservableObject
     private func startAnalyzingAudio() {
         let inputNode = audioEngine.inputNode
         let inputFormat = inputNode.inputFormat(forBus: 0)
-        let outputFormat = AVAudioFormat(commonFormat: .pcmFormatInt16, sampleRate: inputFormat.sampleRate, channels: inputFormat.channelCount, interleaved: true)
+        let outputFormat = AVAudioFormat(commonFormat: .pcmFormatFloat32, sampleRate: inputFormat.sampleRate, channels: inputFormat.channelCount, interleaved: true)
         let converterNode = AVAudioMixerNode()
         let sinkNode = AVAudioMixerNode()
         
@@ -139,13 +139,12 @@ public class AudioProcessor: NSObject, AVAudioRecorderDelegate, ObservableObject
         audioEngine.stop()
         timer?.invalidate()
         timer = nil
-        if let path = filePath {
-            recordingContinuation?.yield(path)
-        }
+        
+        self.recordingContinuation?.finish()
         
         audioRecorder?.stop()
         
-        #if os(iOS) || os(tvOS)
+        #if os(iOS) || os(tvOS) || os(visionOS)
         try? recordingSession?.setActive(false, options: .notifyOthersOnDeactivation)
         recordingSession = nil
         #endif
